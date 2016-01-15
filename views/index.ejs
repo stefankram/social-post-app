@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="SocialNetworkApp">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Social Network App</title>
+        <!-- GoogleStrategy Sign In -->
+        <meta name="google-signin-client_id" content="120498882401-69r3d6o0rtojmtc79da7t6ehr0nd6k0u.apps.googleusercontent.com">
+        <!-- Stylesheets -->
+        <link href="lib/semantic/semantic.css" rel="stylesheet" type="text/css">
+        <link href="css/index.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <!-- HEADER -->
+        <div id="header" class="ui fixed menu">
+            <div class="ui container">
+                <a href="/" class="header item">Social Network App</a>
+                <% if (googleUser) { %>
+                    <a href="/logout" class="item right">Sign Out</a>
+                <% } %>
+            </div>
+        </div>
+        <% if (googleUser) { %>
+        <!-- CONTENT -->
+            <div class="ui container" style="box-sizing: border-box; padding-top: 62px;">
+                <div class="ui one column stackable center aligned grid">
+                    <div class="column" style="max-width: 550px;">
+                        <h2>Write a Status</h2>
+                        <form id="share-form" class="ui large form" ng-controller="ShareStatus" onsubmit="return false;">
+                            <div class="ui stacked segment">
+                                <div class="field" style="text-align: left">
+                                    <label>Status</label>
+                                    <textarea ng-model="share.status" name="status" placeholder="Type status here..."></textarea>
+                                </div>
+                                <div class="inline fields">
+                                    <label>Select social network:</label>
+                                    <div class="field">
+                                        <div id="share-check-facebook" class="ui checkbox">
+                                            <input name="check" type="checkbox" tabindex="0" class="hidden">
+                                            <label>Facebook</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div id="share-check-twitter" class="ui checkbox">
+                                            <input name="check" type="checkbox" tabindex="0" class="hidden">
+                                            <label>Twitter</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div id="share-check-linkedin" class="ui checkbox">
+                                            <input name="check" type="checkbox" tabindex="0" class="hidden">
+                                            <label>LinkedIn</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="status-submit" class="ui fluid large blue submit button" ng-click="submit()">Share</div>
+                                <div class="ui error message"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="ui three column stackable center aligned grid">
+                    <div class="column">
+                        <h2 class="ui black image header">
+                            <img src="img/facebook.png" class="ui mini image" title="Facebook Logo" alt="Facebook Logo">
+                            <div class="content">Facebook</div>
+                        </h2>
+                        <div class="ui segment left aligned">
+                            <% if (facebookUser) { %>
+                                <div id="facebook-statuses" class="ui comments" ng-controller="ModifyStatus">
+                                    <h3 class="ui dividing header">Posts:</h3>
+                                    <form id="facebook-update" class="ui form" onsubmit="return false;" style="display: none;">
+                                        <div class="inline fields">
+                                            <div class="field">
+                                                <input id="facebook-update-text" type="text" placeholder="Update status..." style="width: 160px;">
+                                            </div>
+                                            <div class="ui blue button" ng-click="update('facebook')">Update</div>
+                                        </div>
+                                    </form>
+                                    <% for (var i = 0; i < facebookUser.statuses.length; i++) { %>
+                                        <div id="<%= facebookUser.statuses[i].statusId %>" class="comment">
+                                            <span class="avatar"><img src="img/profile.png"></span>
+                                            <div class="content">
+                                                <span class="author"><%= facebookUser.profile.displayName %></span>
+                                                <div class="text"><%= facebookUser.statuses[i].status %></div>
+                                                <div class="actions">
+                                                    <a href="javascript:void(0)" ng-click="delete('<%= facebookUser.statuses[i].statusId %>', 'facebook')">delete</a>
+                                                    <a href="javascript:void(0)" onclick="$('#facebook-update').show()" ng-click="updateData.id = '<%= facebookUser.statuses[i].statusId %>'">update</a>
+                                                </div>
+                                            </div>
+                                            <div class="comments">
+                                                <% for (var j = 0; j < facebookUser.statuses[i].comments.length; j++) { %>
+                                                    <div class="comment">
+                                                        <span class="avatar"><img src="img/profile.png"></span>
+                                                        <div class="content">
+                                                            <span class="author"><%= facebookUser.statuses[i].comments[j].displayName %></span>
+                                                            <div class="text"><%= facebookUser.statuses[i].comments[j].comment %></div>
+                                                        </div>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            <% } else { %>
+                                <a href="/login/facebook" class="ui button blue">Log In</a>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2 class="ui black image header">
+                            <img src="img/twitter.png" class="ui mini image" title="Twitter Logo" alt="Twitter Logo">
+                            <div class="content">Twitter</div>
+                        </h2>
+                        <div class="ui segment left aligned">
+                            <% if (twitterUser) { %>
+                                <div id="twitter-statuses" class="ui comments" ng-controller="ModifyStatus">
+                                    <h3 class="ui dividing header">Posts:</h3>
+                                    <% for (var i = 0; i < twitterUser.statuses.length; i++) { %>
+                                        <div id="<%= twitterUser.statuses[i].statusId %>" class="comment">
+                                            <span class="avatar"><img src="img/profile.png"></span>
+                                            <div class="content">
+                                                <span class="author"><%= twitterUser.profile.displayName %></span>
+                                                <div class="text"><%= twitterUser.statuses[i].status %></div>
+                                                <div class="actions">
+                                                    <a href="javascript:void(0)" ng-click="delete('<%= twitterUser.statuses[i].statusId %>', 'twitter')">delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            <% } else { %>
+                                <a href="/login/twitter" class="ui button blue">Log In</a>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2 class="ui black image header">
+                            <img src="img/linkedin.png" class="ui mini image" title="Linkedin Logo" alt="Linkedin Logo">
+                            <div class="content">LinkedIn</div>
+                        </h2>
+                        <div class="ui segment left aligned">
+                            <% if (linkedinUser) { %>
+                                <div id="linkedin-statuses" class="ui comments">
+                                    <h3 class="ui dividing header">Posts:</h3>
+                                    <% for (var i = 0; i < linkedinUser.statuses.length; i++) { %>
+                                        <div id="<%= linkedinUser.statuses[i].statusId %>" class="comment">
+                                            <span class="avatar"><img src="img/profile.png"></span>
+                                            <div class="content">
+                                                <span class="author"><%= linkedinUser.profile.displayName %></span>
+                                                <div class="text"><%= linkedinUser.statuses[i].status %></div>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            <% } else { %>
+                                <a href="/login/linkedin" class="ui button blue">Log In</a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } else { %>
+            <div id="login" class="ui middle aligned center aligned grid">
+                <div class="column">
+                    <h2 class="ui black header">Log-in using Google</h2>
+                    <a href="/login/google" class="ui button blue">Sign In</a>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- JavaScript -->
+        <div>
+            <script src="lib/jquery/jquery.js" type="text/javascript"></script>
+            <script src="lib/angular/angular.js" type="text/javascript"></script>
+            <script src="lib/semantic/semantic.js" type="text/javascript"></script>
+            <script src="lib/semantic/components/checkbox.js" type="text/javascript"></script>
+            <script src="controllers/ShareStatus.js" type="text/javascript"></script>
+            <script src="controllers/ModifyStatus.js" type="text/javascript"></script>
+            <script type="text/javascript">
+                $('.ui.checkbox').checkbox();
+                $('#share-form').form({
+                    fields: {
+                        status: {
+                            rules: [{
+                                type: 'empty',
+                                prompt: 'Status can\'t be empty'
+                            }]
+                        },
+                        check: {
+                            rules: [{
+                                type: 'checked',
+                                prompt: 'At least one social media must be checked'
+                            }]
+                        }
+                    }
+                });
+            </script>
+        </div>
+    </body>
+</html>

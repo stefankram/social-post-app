@@ -1,0 +1,5 @@
+body { background-color: #DDDDDD; }
+
+div#login { height: 100%; }
+div#login .column { max-width: 400px; }
+div#login .g-signin2 { margin-top: 15px; }
