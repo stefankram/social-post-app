@@ -1,5 +1,5 @@
 # social-post-app
-Social Post App is a web based application that allows users to post, follow, edit, and delete statuses they make to Facebook, Twitter, and LinkedIn. The application works by submitting a status on the user's behalf to each social network and storing the status ID in a MongoDB table. The application then keeps track of the status by retrieving comments from the its respective social network and includes other options such as editing and deleting statuses. Technologies used include [PassportJS](http://passportjs.org/) for authentication for each social network as well as [Semantic-UI](http://semantic-ui.com/) for the styling.
+Social Post App is a web based application that allows users to post, follow, edit, and delete statuses they make to Facebook, Twitter, and LinkedIn. The application works by submitting a status on the user's behalf to each social network and storing the status ID in a MongoDB table. The application then keeps track of the status by retrieving comments from its respective social network and includes other options such as editing and deleting statuses. Technologies used include [PassportJS](http://passportjs.org/) for authentication for each social network as well as [Semantic-UI](http://semantic-ui.com/) for the styling.
 
 ### Images of the Web UI
 Login screen which uses Google for authentication
